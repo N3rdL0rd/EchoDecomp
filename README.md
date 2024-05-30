@@ -2,6 +2,16 @@
 
 This project is a work in progress (WIP) that aims to decompile Echo Arena and its related engine components.
 
+## Status
+
+The project is currently in the early stages of development. If you are interested in contributing, please see the [Contributing](#contributing) section below.
+
+### Does it compile?
+
+The definitive question for any decompilation project! And the answer is...
+
+***NO! - Or, at least, not yet***
+
 ## What this project is (and isn't)
 
 This project is:
@@ -33,9 +43,6 @@ The project is divided into several main components:
 
 [Read more](TODO) about the individual structures of the subfolders.
 
-## Status
-
-The project is currently in the early stages of development. If you are interested in contributing, please see the [Contributing](#contributing) section below.
 
 ## Contributing
 
