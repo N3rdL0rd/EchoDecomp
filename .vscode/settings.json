@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.visc": "jsonc",
+        "*.json": "json",
+        "cstdio": "cpp"
+    }
+}

@@ -5,7 +5,7 @@
 namespace NRadEngine {
     class CRT0 {
         public:
-        static void InitPlatform(void) {
+        static void InitPlatform() {
             NRadEngine::gLoggingInitialized = 1;
             NRadEngine::CSysOS::Init();
             NRadEngine::CSysOS::InitDbgSymbolLookups();
@@ -15,6 +15,11 @@ namespace NRadEngine {
             char _Buffer[264];
             sprintf(_Buffer, "RAD_Version: release148823");
             InitPlatform();
+        }
+
+        static void __fastcall Exit(__int64 errcode){
+            NRadEngine::CSysOS::Shutdown();
+            NRadEngine::gLoggingInitialized = 0;
         }
     };
 }

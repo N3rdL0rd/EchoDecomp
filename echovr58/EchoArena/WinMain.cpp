@@ -5,9 +5,9 @@
 
 int __fastcall WinMain(HINSTANCE__ *hinst, HINSTANCE__ *previnstance, char *cmdline, int cmdshow)
 {
-    const char *CommandLineA; // rax
-    unsigned int res; // ebx
-    int result; // rax
+    const char *CommandLineA;
+    unsigned int res;
+    int result;
 
     NRadEngine::CRT0::Init();
     CommandLineA = GetCommandLineA();

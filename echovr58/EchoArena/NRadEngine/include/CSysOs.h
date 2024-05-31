@@ -6,5 +6,6 @@ namespace NRadEngine {
         public:
         static void Init();
         static void InitDbgSymbolLookups();
+        static void Shutdown();
     };
 }

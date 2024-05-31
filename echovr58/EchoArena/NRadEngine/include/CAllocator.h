@@ -1,6 +1,5 @@
 namespace NRadEngine {
-    template<int N>
-    class CFixedStringT {
+    class CAllocator {
         // stubbed (for now...)
     };
 }

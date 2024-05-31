@@ -1,11 +1,9 @@
 #include <cstdarg>
 #include <vcruntime_string.h>
 #include "NRadEngine/include/CMemory.h"
-#include "NRadEngine/include/CSysString.h"
 
 namespace NRadEngine {
-    class NWriteLog {
-        public:
+    namespace NWriteLog {
         enum ELogLevel {
             eError = 0,
             eWarning = 1,
@@ -13,12 +11,12 @@ namespace NRadEngine {
             eDebug = 3,
             eVerbose = 4
         };
+
         void WriteLog(NRadEngine::NWriteLog::ELogLevel loglevel, unsigned __int64 channel, const char *format, ...) {
             va_list args;
             va_start(args, format);
             NRadEngine::NWriteLog::WriteLogV(loglevel, channel, format, args);
         }
-        private:
         void WriteLogV(NRadEngine::NWriteLog::ELogLevel loglevel, unsigned __int64 channel, const char *format, char *args) {
             unsigned __int64 length; // rax
             NRadEngine::CLoggingData *loggingData; // rax

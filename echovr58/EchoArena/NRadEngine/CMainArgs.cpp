@@ -1,6 +1,5 @@
 namespace NRadEngine {
-    template<int N>
-    class CFixedStringT {
+    class CMainArgs {
         // stubbed (for now...)
     };
 }

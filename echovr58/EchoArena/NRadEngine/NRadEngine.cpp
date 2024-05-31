@@ -1,36 +1,39 @@
 #include <vcruntime_string.h>
-#include "NRadEngine/include/CMemory.h"
+#include <intrin.h>
+#include "NRadEngine/include/NRadEngine.h"
+#include "NRadEngine/NRadGame/include/CR14Game.h"
+#include "NRadEngine/NWriteLog/include/NWriteLog.h"
 
 namespace NRadEngine {
     __int64 __fastcall Main(const char *argv) {
-        return NRadEngine::Main_(argv);
+        return NRadEngine::Main_(argv); // ! incorrect parameter count, investigation needed
     }
 
     __int64 __fastcall Main_(const char *argv, __int64 a2, float a3, float a4) {
-        NRadEngine::CAllocator *v5; // rax
-        NRadEngine::CAllocator *memory_context_ptr; // rax
-        NRadEngine::NRadGame::CR14Game *v7; // rax
-        NRadEngine::NRadGame::CR14Game *v8; // rax
-        NRadEngine::NRadGame::CR14Game *v9; // rsi
-        __int64 returncode; // r14
-        NRadEngine::CAllocator *v11; // rdi
-        NRadEngine::CAllocator *v12; // rax
-        NRadEngine::CAllocator *v13; // rbx
-        NRadEngine::CMainArgs v15; // [rsp+20h] [rbp-E0h] BYREF
-        __int64 v16; // [rsp+E0h] [rbp-20h]
-        NRadEngine::CFixedStringT<512> result; // [rsp+F0h] [rbp-10h] BYREF
-        NRadEngine::CFixedStringT<512> dst; // [rsp+2F0h] [rbp+1F0h] BYREF
+        // Variable declarations
+        NRadEngine::CAllocator *currentMemoryContext; 
+        NRadEngine::NRadGame::CR14Game *gameInstance; 
+        __int64 returnCode; 
+        NRadEngine::CAllocator *memoryContext1; 
+        NRadEngine::CAllocator *memoryContext2; 
+        NRadEngine::CAllocator *memoryContext3; 
+        NRadEngine::CMainArgs mainArgs; 
+        __int64 v16 = -2i64; // ? unused
+        NRadEngine::CFixedStringT<512> result; 
+        NRadEngine::CFixedStringT<512> dst; 
 
-        v16 = -2i64;
-        NRadEngine::CStringTable::CStringTable(&v15.argvector);
-        v5 = NRadEngine::CMemoryContext::CurrentPtr();
-        v15.symbolmap.mem = 0i64;
-        v15.symbolmap.size = 0i64;
-        v15.symbolmap.allocator = v5;
-        NRadEngine::CMemBlockA<0>::Constructor_(&v15.symbolmap, 0i64);
-        v15.symbolmap.expand = 32i64;
-        memset(&v15.symbolmap.iallocated, 0, 32);
-        NRadEngine::CMainArgs::Set(&v15, argv);
+        // Initialization
+        NRadEngine::CStringTable::CStringTable(&mainArgs.argvector);
+        currentMemoryContext = NRadEngine::CMemoryContext::CurrentPtr();
+        mainArgs.symbolmap.mem = 0i64;
+        mainArgs.symbolmap.size = 0i64;
+        mainArgs.symbolmap.allocator = currentMemoryContext;
+        NRadEngine::CMemBlockA<0>::Constructor_(&mainArgs.symbolmap, 0i64);
+        mainArgs.symbolmap.expand = 32i64;
+        memset(&mainArgs.symbolmap.iallocated, 0, 32);
+        NRadEngine::CMainArgs::Set(&mainArgs, argv);
+
+        // CPU check
         if ( (NRadEngine::QueryCPUExtensions() & 0x38) != 56 )
         {
             NRadEngine::CSysWindow::ShowMessageBox(
@@ -40,53 +43,67 @@ namespace NRadEngine {
             "Lone Echo/Echo Arena");
             NRadEngine::CRT0::Exit(-40i64);
         }
+
+        // Log engine version header
         NRadEngine::NWriteLog::WriteLog(
-            eInfo,
+            NRadEngine::NWriteLog::eInfo,
             0i64,
             "==========================================================\n"
             " R14\n"
             "==========================================================");
-        memory_context_ptr = NRadEngine::CMemoryContext::CurrentPtr();
-        v7 = (NRadEngine::NRadGame::CR14Game *)memory_context_ptr->Alloc(memory_context_ptr, 17192ui64);
-        if ( v7 )
+
+        // Game instance creation
+        currentMemoryContext = NRadEngine::CMemoryContext::CurrentPtr();
+        gameInstance = (NRadEngine::NRadGame::CR14Game *)currentMemoryContext->Alloc(currentMemoryContext, 17192ui64);
+        if ( gameInstance )
         {
-            NRadEngine::NRadGame::CR14Game::CR14Game(v7, &v15, a3, a4);
-            v9 = v8;
+            NRadEngine::NRadGame::CR14Game::CR14Game(gameInstance, &mainArgs, a3, a4);
         }
         else
         {
-            v9 = 0i64;
+            gameInstance = 0i64;
         }
-        v9->appname = "Lone Echo";
+
+        // Game instance setup
+        gameInstance->appname = "Lone Echo";
         NRadEngine::CMemory::Fill(&dst, 0, 0x200ui64);
         NRadEngine::CSysInfo::GetExecutableFile(&dst);
         NRadEngine::CMemory::Fill(&result, 0, 0x200ui64);
         NRadEngine::CSysFile::GetBaseName(&result, &dst);
         NRadEngine::CSysString::ToLower(result.data, 0x200ui64);
-        if ( !NRadEngine::CSysString::Compare(result.data, "echoarena.exe", 1u, 0x200ui64) )
-            NRadEngine::NRadGame::CR14Game::SetMultiplayerApp(v9);
-        v9->Run(v9);
-        returncode = v9->returncode;
-        v11 = NRadEngine::CMemoryContext::CurrentPtr();
-        v12 = NRadEngine::CMemoryContext::CurrentPtr();
-        NRadEngine::CMemoryContext::SetCurrent(v12);
-        v13 = NRadEngine::CMemoryContext::CurrentPtr();
-        ((void (__fastcall *)(NRadEngine::NRadGame::CR14Game *, _QWORD))v9->~CncaGame)(v9, 0i64);
-        v13->Free(v13, v9);
-        NRadEngine::CMemoryContext::SetCurrent(v11);
-        NRadEngine::CMainArgs::Cleanup(&v15);
-        if ( (v15.symbolmap.flags.flags[0] & 3) != 0 )
+        if ( !NRadEngine::CSysString::Compare(result.data, "echoarena.exe", 1u, 0x200ui64) ) // seriously??
+            NRadEngine::NRadGame::CR14Game::SetMultiplayerApp(gameInstance);
+
+        // Run game
+        gameInstance->Run(gameInstance);
+        returnCode = gameInstance->returncode;
+
+        // Cleanup
+        memoryContext1 = NRadEngine::CMemoryContext::CurrentPtr();
+        memoryContext2 = NRadEngine::CMemoryContext::CurrentPtr();
+        NRadEngine::CMemoryContext::SetCurrent(memoryContext2);
+        memoryContext3 = NRadEngine::CMemoryContext::CurrentPtr();
+        ((void (__fastcall *)(NRadEngine::NRadGame::CR14Game *, _QWORD))gameInstance->~CncaGame)(gameInstance, 0i64);
+        memoryContext3->Free(memoryContext3, gameInstance);
+        NRadEngine::CMemoryContext::SetCurrent(memoryContext1);
+        NRadEngine::CMainArgs::Cleanup(&mainArgs);
+        if ( (mainArgs.symbolmap.flags.flags[0] & 3) != 0 )
         {
-            v15.symbolmap.mem = 0i64;
-            v15.symbolmap.size = 0i64;
+            mainArgs.symbolmap.mem = 0i64;
+            mainArgs.symbolmap.size = 0i64;
         }
-        if ( v15.symbolmap.size && v15.symbolmap.mem )
+        if ( mainArgs.symbolmap.size && mainArgs.symbolmap.mem )
         {
-            ((void (__fastcall *)(NRadEngine::CAllocator *))v15.symbolmap.allocator->Free)(v15.symbolmap.allocator);
-            v15.symbolmap.mem = 0i64;
-            v15.symbolmap.size = 0i64;
+            ((void (__fastcall *)(NRadEngine::CAllocator *))mainArgs.symbolmap.allocator->Free)(mainArgs.symbolmap.allocator);
+            mainArgs.symbolmap.mem = 0i64;
+            mainArgs.symbolmap.size = 0i64;
         }
-        NRadEngine::CStringTable::~CStringTable(&v15.argvector);
-        return returncode;
+        NRadEngine::CStringTable::~CStringTable(&mainArgs.argvector);
+
+        return returnCode;
+    }
+
+    __int64 QueryCPUExtensions() {
+        return 0xFF; // * stubbed, see echovr58/wip/NRadEngine.cpp and docs/echovr58/engine.md#unresolved-issues
     }
 }

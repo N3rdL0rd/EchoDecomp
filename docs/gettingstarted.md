@@ -31,7 +31,32 @@ Only 1877 out of 1880 files are valid! The files were unable to get repaired. Yo
 Download failed
 ```
 
-Place the game files in the echovr/orig and echovr58/orig directories respectively.
+Place the game files in the echovr/orig and echovr58/orig directories respectively. Run the following command to verify that everything is correct:
+
+```batch
+python utils/verify_game_files.py
+```
+
+If everything is correct, you should see the following output:
+
+```plaintext
+SHA256 Checksum: e89460d67e0634c3bd70bf363d51c2f8dc36d5b2ecdbd97c134ef29fd0e118fb
+
+EchoVR v34.4.631547.1 verified!
+
+SHA256 Checksum: 9d27c0746d567200f494d32dcb30fbb855a34a4aab38042986590c5409e8bee0
+
+EchoVR v1.58 verified!
+```
+
+If v1.58 isn't verified correctly, just check by hand that the SHA256 checksums of the following files match:
+
+```plaintext
+bin\win7\EchoArena.exe - 1df128a8742da1a24488dd03a4a3ff84785c444f15f12cd89b7ded5800573d46
+bin\win7\EchoArena.pdb - beac9fce00ef7b38af29debcfa9dab140f9139751682ec00b826e3bc5e6709ce
+bin\win7\pnsovr.dll    - fc75bcdd6f147abff6b07b80dd5675813911adcf73f7227029c01f7a7de4e129
+bin\win7\pnsrad.dll    - fbb1a73168ab88678e324bf63aba1794120aad7f24288d34bdbb62e52d1a36f1
+```
 
 ## Methodology
 
