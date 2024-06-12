@@ -97,6 +97,8 @@ Look at the files in the `echovr` and `echovr58` directories. The code is organi
 
 - Focus on one function at a time. If you jump around too much, you'll never make any real progress.
 - Ignore `__fastcall` calling conventions for functions that don't have any arguments. IDA and Ghidra will often get this wrong, and it's not worth the effort to fix it with a plugin.
+- When committing changes, make sure to include the fully qualified name of the function or class you worked on in the commit message. Basically, don't do what I did in the first few commits. If you decompile a large number of classes, you may group them together in a single commit, but make sure to include the names of all the classes in the pull request description.
+  - For instance, if I decompiled the `CSysString.ToUpper` function in v1.58, I would include the following in the commit message: `echovr58: decompiled NRadEngine::CSysString::ToUpper()`.
 <!-- TODO: more tips -->
 
 ## Good luck and happy decompiling! 🎉
