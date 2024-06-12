@@ -16,6 +16,9 @@ Before you begin, you will need the following tools and resources:
 
 ## Getting the Game Versions
 
+> [!TIP]
+> Again, if you didn't own the game previously but would still like to help, or are unable to download the files directly, you can shoot me a DM on Discord and I'll see what I can do.
+
 For v34.4.631547.1, you can either get it by using [OculusDowngrader](https://computerelite.github.io/tools/Oculus/OculusDowngraderGuide.html) or by downloading it from [here](https://drive.google.com/file/d/1At6J2RssQTHzYtOLJ6riLHsqdj-TROEg/view).
 
 For v1.58, you can get it only by downgrading the game using [OculusDowngrader](https://computerelite.github.io/tools/Oculus/OculusDowngraderGuide.html). If you download this version and encounter an error like the one shown below, you can ignore it as it is not important for the decompilation process.
