@@ -1,6 +1,6 @@
 # EchoVR v1.58 - Engine Notes (RAD14)
 
-This document contains notes on the RAD engine used by EchoVR v1.58. The engine is a modified version of RAD14, which is a proprietary engine developed by Ready At Dawn Studios. The engine is used in several games, including Echo VR, Lone Echo, and Lone Echo II.
+This document contains notes on the RAD engine used by EchoVR v1.58. The engine is a modified version of RAD14, which is a proprietary engine developed by Ready At Dawn Studios.
 
 ## Naming Schemes
 
