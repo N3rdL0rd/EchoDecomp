@@ -32,6 +32,9 @@ This project is not:
 
 The project is divided into several main components:
 
+> [!NOTE]
+> Not all of these directories exist yet, but this is the format that they will follow in the future.
+
 - `echovr` - Decompilation of v34.4.631547.1 (latest playable version).
   - `scripts` - Decompilation of each of the game script DLLs.
   - `echovr` - Decompilation of the main game executable.
