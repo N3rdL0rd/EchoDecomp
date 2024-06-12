@@ -118,7 +118,7 @@ namespace NRadEngine
             straLength = NRadEngine::CSysString::Length(stra, 0x800ui64) + 1;
             if (straLength < 0x800)
                 memset(&stra[straLength], 0, 2048 - straLength);
-            argVectorIndex = NRadEngine::CStringTable::Grow(&this->argvector, stra); // TODO: decompile
+            argVectorIndex = NRadEngine::CStringTable::Grow(&this->argvector, stra); // TODO: argvector and investigate parameters
             if (isArg)
             {
                 while (1)

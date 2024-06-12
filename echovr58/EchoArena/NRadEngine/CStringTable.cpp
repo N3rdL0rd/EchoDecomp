@@ -9,16 +9,17 @@ namespace NRadEngine
     {
         public:
         NRadEngine::CTable<char> chararray;
-
-        unsigned __int64 __fastcall Grow(const char *string)
+        static unsigned __int64 __fastcall Grow(const char *string)
         {
-            return this->InternalGrow(string, 0xFFFFFFFFFFFFFFFFui64);
+            return this->InternalGrow(string, 0xFFFFFFFFFFFFFFFFui64); // TODO: this reference in a static function, could be related to parameter passing
         }
 
-        unsigned __int64 __fastcall InternalGrow(
+        private:
+        static unsigned __int64 __fastcall InternalGrow(
             const char *string,
             unsigned __int64 len)
         {
+            // TODO: fix this mess
             unsigned __int64 v3;         // r15
             const char *v4;              // rdi
             void *v6;                    // r12
