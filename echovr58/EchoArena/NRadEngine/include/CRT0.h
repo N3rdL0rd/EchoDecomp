@@ -3,6 +3,6 @@ namespace NRadEngine {
         public:
         static void InitPlatform();
         static void Init();
-        static void Exit(__int64 errcode)
+        static void Exit(__int64 errcode);
     };
 }

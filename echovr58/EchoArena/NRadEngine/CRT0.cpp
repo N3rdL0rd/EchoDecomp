@@ -1,3 +1,5 @@
+#include "NRadEngine/include/CRT0.h"
+
 #include <cstdio>
 #include "NRadEngine/include/globals.h"
 #include "NRadEngine/include/CSysOs.h"

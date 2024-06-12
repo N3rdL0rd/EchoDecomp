@@ -1,6 +1,9 @@
+#include "NRadEngine/NWriteLog/include/NWriteLog.h"
+
 #include <cstdarg>
 #include <vcruntime_string.h>
 #include "NRadEngine/include/CMemory.h"
+#include "NRadEngine/include/CSysString.h"
 
 namespace NRadEngine {
     namespace NWriteLog {

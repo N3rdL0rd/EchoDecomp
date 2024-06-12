@@ -76,3 +76,27 @@ The general approach to decompiling Echo Arena is as follows:
 - Contribute your findings back to the community by submitting pull requests on the GitHub repository.
 - Celebrate your success!
 - Repeat the process for the next function.
+
+## About Stubbing
+
+When stubbing out a function, you should replace all the decompiled code with a single return statement, or, if you do not expect to compile at all, a comment indicating that the function is incomplete, preferably:
+
+```c
+// TODO: stubbed
+```
+
+These conventions are important for maintaining consistency across the project and for ensuring that the decompiled code is as readable as possible, as well as easy to search for in the future.
+
+## Next Steps (or; "What should I work on?")
+
+If you're using VSCode, wait! You can install the [Todo Tree](https://marketplace.visualstudio.com/items?itemName=Gruntfuggly.todo-tree) extension to easily see all the `TODO` comments in the project. This will help you find what to work on next much more easily - just go to the TODOs tab in the sidebar, select "Flat view", and select "Grouped by tag". Expand the TODOs and you'll see everything that needs to be done.
+
+Look at the files in the `echovr` and `echovr58` directories. The code is organized into directories for each namespace, and a file for each class or function. You can start by looking at the `NRadEngine` namespace, which contains the engine classes, and the NRadGame namespace (which is nested inside NRadEngine), which contains the game-specific classes. Find a function that is stubbed or doesn't compile (most likely one that calls a function that hasn't been stubbed or decopmiled yet) and start working on it. If you have any questions, feel free to ask in the Discord server.
+
+## Tips
+
+- Focus on one function at a time. If you jump around too much, you'll never make any real progress.
+- Ignore `__fastcall` calling conventions for functions that don't have any arguments. IDA and Ghidra will often get this wrong, and it's not worth the effort to fix it with a plugin.
+<!-- TODO: more tips -->
+
+## Good luck and happy decompiling! 🎉

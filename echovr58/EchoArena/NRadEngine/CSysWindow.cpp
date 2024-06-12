@@ -1,3 +1,5 @@
+#include "NRadEngine/include/CSysWindow.h"
+
 #include <Windows.h>
 #include "NRadEngine/NWriteLog/include/NWriteLog.h"
 

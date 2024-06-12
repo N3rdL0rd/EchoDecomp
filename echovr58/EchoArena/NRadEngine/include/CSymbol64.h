@@ -1,5 +1,5 @@
 namespace NRadEngine {
-    class CStringTable {
+    class CSymbol64 {
         // TODO: stubbed
     };
 }

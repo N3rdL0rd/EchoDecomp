@@ -1,3 +1,5 @@
+#include "NRadEngine/include/CSysTime.h"
+
 #include <windows.h>
 
 namespace NRadEngine {

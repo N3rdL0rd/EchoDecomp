@@ -1,8 +1,12 @@
+#include "NRadEngine/include/NRadEngine.h"
+
 #include <vcruntime_string.h>
 #include <intrin.h>
 #include "NRadEngine/include/NRadEngine.h"
 #include "NRadEngine/NRadGame/include/CR14Game.h"
 #include "NRadEngine/NWriteLog/include/NWriteLog.h"
+#include "NRadEngine/include/CSysString.h"
+#include "NRadEngine/include/CSysInfo.h"
 
 namespace NRadEngine {
     __int64 __fastcall Main(const char *argv) {
@@ -23,6 +27,7 @@ namespace NRadEngine {
         NRadEngine::CFixedStringT<512> dst; 
 
         // Initialization
+        // TODO: a lot of this is unimplemented - symbolmap is a type of CMap, which is very complex comparatively
         NRadEngine::CStringTable::CStringTable(&mainArgs.argvector);
         currentMemoryContext = NRadEngine::CMemoryContext::CurrentPtr();
         mainArgs.symbolmap.mem = 0i64;
@@ -54,7 +59,7 @@ namespace NRadEngine {
 
         // Game instance creation
         currentMemoryContext = NRadEngine::CMemoryContext::CurrentPtr();
-        gameInstance = (NRadEngine::NRadGame::CR14Game *)currentMemoryContext->Alloc(currentMemoryContext, 17192ui64);
+        gameInstance = (NRadEngine::NRadGame::CR14Game *)currentMemoryContext->Alloc(currentMemoryContext, 17192ui64); // TODO: ida refuses to decompile Alloc()
         if ( gameInstance )
         {
             NRadEngine::NRadGame::CR14Game::CR14Game(gameInstance, &mainArgs, a3, a4);
@@ -71,8 +76,8 @@ namespace NRadEngine {
         NRadEngine::CMemory::Fill(&result, 0, 0x200ui64);
         NRadEngine::CSysFile::GetBaseName(&result, &dst);
         NRadEngine::CSysString::ToLower(result.data, 0x200ui64);
-        if ( !NRadEngine::CSysString::Compare(result.data, "echoarena.exe", 1u, 0x200ui64) ) // seriously??
-            NRadEngine::NRadGame::CR14Game::SetMultiplayerApp(gameInstance);
+        if ( !NRadEngine::CSysString::Compare(result.data, "echoarena.exe", 1u, 0x200ui64) ) // match case, up to 512 characters
+            NRadEngine::NRadGame::CR14Game::SetMultiplayerApp(gameInstance); // HACK: only enable multiplayer if the executable is named "echoarena.exe"
 
         // Run game
         gameInstance->Run(gameInstance);
@@ -80,12 +85,12 @@ namespace NRadEngine {
 
         // Cleanup
         memoryContext1 = NRadEngine::CMemoryContext::CurrentPtr();
-        memoryContext2 = NRadEngine::CMemoryContext::CurrentPtr();
         NRadEngine::CMemoryContext::SetCurrent(memoryContext2);
-        memoryContext3 = NRadEngine::CMemoryContext::CurrentPtr();
+        memoryContext2 = NRadEngine::CMemoryContext::CurrentPtr();
         ((void (__fastcall *)(NRadEngine::NRadGame::CR14Game *, _QWORD))gameInstance->~CncaGame)(gameInstance, 0i64);
-        memoryContext3->Free(memoryContext3, gameInstance);
-        NRadEngine::CMemoryContext::SetCurrent(memoryContext1);
+        memoryContext2->Free(memoryContext3, gameInstance);
+        memoryContext3 = NRadEngine::CMemoryContext::CurrentPtr();
+        NRadEngine::CMemoryContext::SetCurrent(memoryContext3);
         NRadEngine::CMainArgs::Cleanup(&mainArgs);
         if ( (mainArgs.symbolmap.flags.flags[0] & 3) != 0 )
         {

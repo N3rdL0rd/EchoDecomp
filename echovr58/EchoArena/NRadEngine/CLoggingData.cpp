@@ -1,3 +1,5 @@
+#include "NRadEngine/include/CLoggingData.h"
+
 namespace NRadEngine {
     class CLoggingData {
         public:

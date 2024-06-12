@@ -39,3 +39,4 @@ The following is a non-exhaustive list of information about the RAD engine execu
 ## Unresolved Issues
 
 - [`NRadEngine::QueryCPUExtensions`](https://github.com/N3rdL0rd/EchoDecomp/blob/main/echovr58/EchoArena/NRadEngine/NRadEngine.cpp#L112) decompiles to inline assembly, which does not cooperate with IDA's pseudocode output. It has been stubbed out for now - see the IDA-generated decompilation [here](/echovr58/wip/NRadEngine.cpp) (note: modified by hand for readability).
+- `NRadEngine::CLoggingData` is a class for logging data, but this seems like a class generated from a template. The original template class is known as `CEnvData`, but it is not yet clear how to decompile this class properly.

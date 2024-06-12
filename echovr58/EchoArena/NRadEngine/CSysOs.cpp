@@ -1,3 +1,5 @@
+#include "NRadEngine/include/CSysOs.h"
+
 #include <Windows.h>
 #include <DbgHelp.h>
 #include "NRadEngine/include/globals.h"

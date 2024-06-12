@@ -3,5 +3,6 @@
         "*.visc": "jsonc",
         "*.json": "json",
         "cstdio": "cpp"
-    }
+    },
+    "todo-tree.tree.scanMode": "workspace only"
 }

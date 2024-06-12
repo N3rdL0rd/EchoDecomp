@@ -41,9 +41,10 @@ The project is divided into several main components:
 - `utils` - Utility scripts and tools for decompilation and analysis.
 - `docs` - Documentation and guides for contributors and users.
 
-[Read more](TODO) about the individual structures of the subfolders.
-
-
 ## Contributing
 
 In order to get started decompiling Echo Arena, see the [Getting Started](docs/gettingstarted.md) guide. Or, if you think you know what you're doing, feel free to jump right in! Join our [Discord server](https://discord.gg/f57yNaJmRg) to chat with other contributors and get help with the decompilation process. We welcome contributions from anyone interested in game development or reverse engineering. If you have any information or findings that you think could benefit this project, please feel free to share them with us. You can contribute by submitting pull requests or by opening issues on our GitHub page.
+
+## Legal and Licensing
+
+This project is not licensed under any open-source license, as it is a decompilation of copyrighted software. However, we aim to respect the rights of the original developers at Ready at Dawn and Oculus, and we do not intend to distribute any copyrighted material. We encourage contributors to respect the rights of the original developers and to avoid sharing any copyrighted material. If you have any concerns about the legality of this project, please contact us on our Discord server.
