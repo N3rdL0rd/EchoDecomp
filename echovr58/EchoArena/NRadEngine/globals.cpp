@@ -1,5 +1,6 @@
 #include "NRadEngine/include/NRadEngine.h"
 
 namespace NRadEngine {
-    static int gLoggingInitialized = 0;
+    extern int gLoggingInitialized = 0;
+    extern unsigned __int64 precache[256];
 }

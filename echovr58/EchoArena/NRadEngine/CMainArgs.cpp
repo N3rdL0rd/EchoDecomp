@@ -138,7 +138,7 @@ namespace NRadEngine
                 _hostname = hostname; // TODO: undefined reference to hostname
                 if (*(uint64_t *)(symbolValue + 40))
                     _hostname = *(const char **)symbolValue;
-                calculatedSymbolValue = NRadEngine::CSymbol64::CalculateSymbolValue( // TODO: decompile
+                calculatedSymbolValue = NRadEngine::CSymbol64::CalculateSymbolValue(
                     _hostname,
                     NRadEngine::kEmptySymbol_0.value, // TODO: implement kEmptySymbol_0
                     0,
