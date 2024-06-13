@@ -11,17 +11,14 @@ Before you begin, you will need the following tools and resources:
 
 - [Ghidra](https://ghidra-sre.org/) (free) or [IDA Pro](https://www.hex-rays.com/products/ida/) (paid, reccomended) - A disassembler and decompiler for reverse engineering
 - A copy of Echo Arena v34.4.631547.1 (the latest playable version of the game before its shutdown) - You can obtain this either from the Oculus Store (by [downgrading](https://computerelite.github.io/tools/Oculus/OculusDowngraderGuide.html) if you previously owned the game) or from [here](https://drive.google.com/file/d/1At6J2RssQTHzYtOLJ6riLHsqdj-TROEg/view)
-- (Optional) A copy of Echo Arena v1.58 (a version that accidentally shipped with debug symbols) - You can only obtain this from the Oculus Store by downgrading if you previously owned the game
+- (Optional) A copy of Echo Arena v1.58 (a version that accidentally shipped with debug symbols) - You can obtain this from the Oculus Store by downgrading or from [here](https://archive.org/details/echovr58)
 - (Optional) Python 3.8 or later - To run various tools in the repository
 
 ## Getting the Game Versions
 
-> [!TIP]
-> Again, if you didn't own the game previously but would still like to help, or are unable to download the files directly, you can shoot me a DM on Discord and I'll see what I can do.
-
 For v34.4.631547.1, you can either get it by using [OculusDowngrader](https://computerelite.github.io/tools/Oculus/OculusDowngraderGuide.html) or by downloading it from [here](https://drive.google.com/file/d/1At6J2RssQTHzYtOLJ6riLHsqdj-TROEg/view).
 
-For v1.58, you can get it only by downgrading the game using [OculusDowngrader](https://computerelite.github.io/tools/Oculus/OculusDowngraderGuide.html). If you download this version and encounter an error like the one shown below, you can ignore it as it is not important for the decompilation process.
+For v1.58, you can either get it by downgrading the game using [OculusDowngrader](https://computerelite.github.io/tools/Oculus/OculusDowngraderGuide.html) or by downloading it from [here](https://archive.org/details/echovr58)
 
 ```plaintext
 Download finished. Processing files...
