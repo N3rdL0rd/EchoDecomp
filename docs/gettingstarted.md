@@ -10,7 +10,7 @@ This guide will walk you through the process of setting up your decompilation en
 Before you begin, you will need the following tools and resources:
 
 - [Ghidra](https://ghidra-sre.org/) (free) or [IDA Pro](https://www.hex-rays.com/products/ida/) (paid, reccomended) - A disassembler and decompiler for reverse engineering
-- A copy of Echo Arena v34.4.631547.1 (the latest playable version of the game before its shutdown) - You can obtain this either from the Oculus Store (by [downgrading](https://computerelite.github.io/tools/Oculus/OculusDowngraderGuide.html) if you previously owned the game) or from [here](https://drive.google.com/file/d/1At6J2RssQTHzYtOLJ6riLHsqdj-TROEg/view)
+- A copy of Echo Arena v34.4.631547.1 (the latest playable version of the game before its shutdown) - You can obtain this either from the Oculus Store (by [downgrading](https://computerelite.github.io/tools/Oculus/OculusDowngraderGuide.html) if you previously owned the game) or from [here](https://drive.google.com/file/d/1At6J2RssQTHzYtOLJ6riLHsqdj-TROEg/view) or [here](https://archive.org/details/echovr)
 - (Optional) A copy of Echo Arena v1.58 (a version that accidentally shipped with debug symbols) - You can obtain this from the Oculus Store by downgrading or from [here](https://archive.org/details/echovr58)
 - (Optional) Python 3.8 or later - To run various tools in the repository
 
