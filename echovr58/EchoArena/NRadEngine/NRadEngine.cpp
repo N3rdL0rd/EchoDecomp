@@ -110,6 +110,6 @@ namespace NRadEngine {
     }
 
     __int64 QueryCPUExtensions() {
-        return 0xFF; // * stubbed, see echovr58/wip/NRadEngine.cpp and docs/echovr58/engine.md#unresolved-issues
+        return 0xFF; // TODO: stubbed, see echovr58/wip/NRadEngine.cpp and docs/echovr58/engine.md#unresolved-issues
     }
 }
