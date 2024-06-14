@@ -1,3 +1,5 @@
+#include "NRadEngine/include/CSysFile.h"
+
 #include "NRadEngine/include/CFixedStringT.h"
 #include "NRadEngine/include/CSysString.h"
 #include "NRadEngine/include/CMemory.h"
