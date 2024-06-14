@@ -2,19 +2,20 @@
 
 #include "NRadEngine/include/CMemory.h"
 #include "NRadEngine/include/CSysString.h"
+#include "include/ints.h"
 
 namespace NRadEngine
 {
     class CStringTable
     {
-        public:
+    public:
         NRadEngine::CTable<char> chararray;
         static unsigned __int64 __fastcall Grow(const char *string)
         {
             return this->InternalGrow(string, 0xFFFFFFFFFFFFFFFFui64); // TODO: this reference in a static function, could be related to parameter passing
         }
 
-        private:
+    private:
         static unsigned __int64 __fastcall InternalGrow(
             const char *string,
             unsigned __int64 len)
@@ -189,6 +190,44 @@ namespace NRadEngine
             }
             *((_DWORD *)this->indexmap.mem + this->indexmap.iused++) = iused;
             return this->indexmap.iused - 1;
+        }
+
+        static void __fastcall Reset(NRadEngine::CStringTable *obj)
+        {
+            bool shouldOptimizeIndexMap; // zf
+
+            *(_QWORD *)&obj->stringcount = 0i64; // Reset string count to 0
+            shouldOptimizeIndexMap = (obj->indexmap.flags.flags[0] & 3) == 0; // Check if optimization is needed for indexmap
+            obj->indexmap.iused = 0i64; // Reset used indices count to 0
+            if (shouldOptimizeIndexMap)
+            {
+                // Optimize indexmap if condition is met
+                NRadEngine::CTableA<NRadEngine::CFlagsT<unsigned int, 1>, 0>::Optimize((NRadEngine::CTableA<NRadEngine::CFreeListT<unsigned short>::SRange, 0> *)&obj->indexmap);
+            }
+            else
+            {
+                // Reset indexmap memory allocation details if optimization is not needed
+                obj->indexmap.mem = 0i64;
+                obj->indexmap.size = 0i64;
+                obj->indexmap.iallocated = 0i64;
+                obj->indexmap.flags.flags[0] &= 0xFFFFFFFC; // Reset specific flags
+            }
+
+            bool shouldOptimizeCharArray = (obj->chararray.flags.flags[0] & 3) == 0; // Check if optimization is needed for chararray
+            obj->chararray.iused = 0i64; // Reset used characters count to 0
+            if (shouldOptimizeCharArray)
+            {
+                // Optimize chararray if condition is met
+                NRadEngine::CTableA<char, 0>::Optimize((NRadEngine::CTableA<unsigned char, 0> *)&obj->chararray);
+            }
+            else
+            {
+                // Reset chararray memory allocation details if optimization is not needed
+                obj->chararray.mem = 0i64;
+                obj->chararray.size = 0i64;
+                obj->chararray.iallocated = 0i64;
+                obj->chararray.flags.flags[0] &= 0xFFFFFFFC; // Reset specific flags
+            }
         }
     };
 }

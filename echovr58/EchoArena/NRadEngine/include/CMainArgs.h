@@ -1,5 +1,5 @@
 namespace NRadEngine {
     class CMainArgs {
-        // TODO: stubbed
+        void __fastcall Cleanup(NRadEngine::CMainArgs *obj);
     };
 }

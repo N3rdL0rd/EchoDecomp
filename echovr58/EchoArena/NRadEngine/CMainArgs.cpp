@@ -15,7 +15,7 @@ namespace NRadEngine
 {
     class CMainArgs
     {
-        public:
+    public:
         NRadEngine::CMap<NRadEngine::CSymbol64, unsigned __int64> symbolmap;
         void __fastcall Set(const char *commandLine)
         {
@@ -88,22 +88,22 @@ namespace NRadEngine
 
         void __fastcall Append(const char *inputStr, unsigned __int64 length, unsigned int isArg)
         {
-            unsigned __int64 remainingLength; // rsi
-            const char *currentChar; // rbx
-            unsigned __int64 copyLength; // rdi
-            unsigned __int64 straLength; // rax
-            unsigned __int64 argVectorIndex; // rbp
-            char currentCharValue; // cl
-            __int64 symbolValue; // rax
-            const char *_hostname; // rcx
-            __int64 calculatedSymbolValue; // rdi
-            unsigned __int64 allocatedSymbols; // rcx
-            unsigned __int64 expandSymbols; // rbx
-            __int64 *symbolMapEntry; // r8
+            unsigned __int64 remainingLength;                   // rsi
+            const char *currentChar;                            // rbx
+            unsigned __int64 copyLength;                        // rdi
+            unsigned __int64 straLength;                        // rax
+            unsigned __int64 argVectorIndex;                    // rbp
+            char currentCharValue;                              // cl
+            __int64 symbolValue;                                // rax
+            const char *_hostname;                              // rcx
+            __int64 calculatedSymbolValue;                      // rdi
+            unsigned __int64 allocatedSymbols;                  // rcx
+            unsigned __int64 expandSymbols;                     // rbx
+            __int64 *symbolMapEntry;                            // r8
             NRadEngine::CMemParmsT<unsigned __int64> memParams; // [rsp+30h] [rbp-878h] BYREF
-            NRadEngine::CString processedString; // TODO: constructor
-            __int64 v20; // [rsp+80h] [rbp-828h]
-            char stra[2048]; // [rsp+90h] [rbp-818h] BYREF
+            NRadEngine::CString processedString;                // TODO: constructor
+            __int64 v20;                                        // [rsp+80h] [rbp-828h]
+            char stra[2048];                                    // [rsp+90h] [rbp-818h] BYREF
 
             v20 = -2i64;
             remainingLength = length;
@@ -135,7 +135,7 @@ namespace NRadEngine
                 memParams.expandf = 32i64;
                 memParams.allocator = NRadEngine::CMemoryContext::CurrentPtr();
                 NRadEngine::CString::CString(&processedString, currentChar, &currentChar[remainingLength], 0, &memParams); // TODO: constructor matching arguments
-                _hostname = hostname; // TODO: undefined reference to hostname
+                _hostname = hostname;                                                                                      // TODO: undefined reference to hostname
                 if (*(uint64_t *)(symbolValue + 40))
                     _hostname = *(const char **)symbolValue;
                 calculatedSymbolValue = NRadEngine::CSymbol64::CalculateSymbolValue(
@@ -171,5 +171,27 @@ namespace NRadEngine
                 symbolMapEntry[1] = argVectorIndex;
                 this->symbolmap.status.flags[0] |= 1u;
             }
-        }    };
+        }
+
+        static void __fastcall Cleanup(NRadEngine::CMainArgs *obj)
+        {
+            bool isSymbolMapFlagReset;
+        
+            isSymbolMapFlagReset = (obj->symbolmap.flags.flags[0] & 3) == 0;
+            obj->symbolmap.iused = 0i64;
+            if (isSymbolMapFlagReset)
+            {
+                NRadEngine::CTableA<NRadEngine::SGProbePoint, 0>::Optimize((NRadEngine::CTableA<NRadEngine::SScriptCD::SSymbolData, 0> *)&obj->symbolmap);
+                NRadEngine::CStringTable::Reset(&obj->argvector);
+            }
+            else
+            {
+                obj->symbolmap.mem = 0i64;
+                obj->symbolmap.size = 0i64;
+                obj->symbolmap.iallocated = 0i64;
+                obj->symbolmap.flags.flags[0] &= 0xFFFFFFFC;
+                NRadEngine::CStringTable::Reset(&obj->argvector);
+            }
+        }
+    };
 }

@@ -2,12 +2,14 @@
 
 #include <vcruntime_string.h>
 #include <intrin.h>
+#include "include/ints.h"
 #include "NRadEngine/include/NRadEngine.h"
 #include "NRadEngine/NRadGame/include/CR14Game.h"
 #include "NRadEngine/NWriteLog/include/NWriteLog.h"
 #include "NRadEngine/include/CSysString.h"
 #include "NRadEngine/include/CSysInfo.h"
 #include "NRadEngine/include/CSysFile.h"
+
 
 namespace NRadEngine {
     __int64 __fastcall Main(const char *argv) {
