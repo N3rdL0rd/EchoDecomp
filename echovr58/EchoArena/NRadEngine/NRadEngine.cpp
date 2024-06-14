@@ -81,7 +81,7 @@ namespace NRadEngine {
             NRadEngine::NRadGame::CR14Game::SetMultiplayerApp(gameInstance); // HACK: only enable multiplayer if the executable is named "echoarena.exe"
 
         // Run game
-        gameInstance->Run(gameInstance);
+        gameInstance->Run(gameInstance); // TODO: IDA also doesn't want to decompile this
         returnCode = gameInstance->returncode;
 
         // Cleanup
