@@ -65,6 +65,8 @@ def compare_to_functions_c(functions_c, decompiled_functions):
     missing = []
     i = 0
     for line in data.split("\n"):
+        if line.startswith("//"):
+            continue
         i += 1
         found = False
         for function in decompiled_functions:

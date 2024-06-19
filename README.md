@@ -6,11 +6,12 @@ This project is a work in progress (WIP) that aims to decompile Echo Arena and i
 
 The project is currently in the early stages of development. If you are interested in contributing, please see the [Contributing](#contributing) section below.
 
-### Does it compile?
+### Progress
 
-The definitive question for any decompilation project! And the answer is...
-
-***NO! - Or, at least, not yet***
+- Decompilation of v34.4.631547.1 (latest playable version) has not yet begun.
+- Decompilation of v1.58:
+  - `EchoArena` - 0.07861% complete (36/45797).
+  - `scripts` - 0.00% complete.
 
 ## What this project is (and isn't)
 
