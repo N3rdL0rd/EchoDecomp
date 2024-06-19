@@ -44,6 +44,10 @@ The project is divided into several main components:
 - `utils` - Utility scripts and tools for decompilation and analysis.
 - `docs` - Documentation and guides for contributors and users.
 
+## Future Plans
+
+- Examine Android versions of Echo Arena/VR to see if they can also be decompiled.
+
 ## Contributing
 
 In order to get started decompiling Echo Arena, see the [Getting Started](docs/gettingstarted.md) guide. Or, if you think you know what you're doing, feel free to jump right in! Join our [Discord server](https://discord.gg/f57yNaJmRg) to chat with other contributors and get help with the decompilation process. We welcome contributions from anyone interested in game development or reverse engineering. If you have any information or findings that you think could benefit this project, please feel free to share them with us. You can contribute by submitting pull requests or by opening issues on our GitHub page.

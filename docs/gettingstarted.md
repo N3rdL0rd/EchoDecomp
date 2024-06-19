@@ -13,6 +13,15 @@ Before you begin, you will need the following tools and resources:
 - A copy of Echo Arena v34.4.631547.1 (the latest playable version of the game before its shutdown) - You can obtain this either from the Oculus Store (by [downgrading](https://computerelite.github.io/tools/Oculus/OculusDowngraderGuide.html) if you previously owned the game) or from [here](https://drive.google.com/file/d/1At6J2RssQTHzYtOLJ6riLHsqdj-TROEg/view) or [here](https://archive.org/details/echovr)
 - (Optional) A copy of Echo Arena v1.58 (a version that accidentally shipped with debug symbols) - You can obtain this from the Oculus Store by downgrading or from [here](https://archive.org/details/echovr58)
 - (Optional) Python 3.8 or later - To run various tools in the repository
+- (Optional, if you're interested) A copy of Echo VR v4987566 for Oculus Quest - You can obtain this from [here](https://archive.org/download/echo-vr-v-4987566-apk-obb-quest-2/Echo%20VR%20v4987566%20APK%2BOBB%20%28Quest%202%29.zip)
+
+## Python Setup
+
+If you're using Python for the tools, you'll need to install the required packages. You can do this by running the following command in the root of the repository:
+
+```batch
+pip install -r utils/requirements.txt
+```
 
 ## Getting the Game Versions
 
