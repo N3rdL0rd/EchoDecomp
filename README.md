@@ -12,9 +12,6 @@ The project is currently in the early stages of development. If you are interest
 
 #### Decompilation of v1.58
 
-- `EchoArena` - 0.07861% complete (36/45797).
-- `scripts` - 0.00% complete.
-
 ![Progress graph](docs/graphs/graph3.png)
 
 ## What this project is (and isn't)
