@@ -1,1 +1,2 @@
 git+https://github.com/N3rdL0rd/cxxheaderparser
+matplotlib

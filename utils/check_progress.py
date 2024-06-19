@@ -1,15 +1,15 @@
-"""
-Quick and dirty script to check the total decompilation progress.
-Here's how this (basically) works:
-- Check the list of functions (functions.c)
-- Crawl the decompiled code directory and find all function definitions in the c files (and headers too, just as another statistic)
-- Compare the two lists (by name, not by parameters or return type) and print the results
-"""
 import os
 import re
 from cxxheaderparser.simple import parse_string
 import cxxheaderparser.errors
-from pprint import pprint
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import subprocess
+import json
+from datetime import datetime
+
+def get_git_revision_short_hash() -> str:
+    return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).decode('ascii').strip()
 
 def parse_filename(filename):
     with open(filename, "r") as f:
@@ -76,18 +76,86 @@ def compare_to_functions_c(functions_c, decompiled_functions):
         if not found:
             missing.append(function)
     return missing, i
-    
-if __name__ == "__main__":
-    print("Finding decompiled functions...")
-    functions = get_decompiled_functions("echovr58/EchoArena")
-    print("Finding functions.c functions...")
-    missing, total = compare_to_functions_c("echovr58/wip/functions.c", functions)
+
+def create_graphs(data, functions, missing, total, folder_path):
+    ### Graph 1: total decompiled functions vs total functions in functions.c (bar)
+    fig, ax = plt.subplots()
+    ax.set_title("# of decompiled functions vs total # of functions in the executable")
+    ax.bar(["Decompiled", "functions.c"], [len(functions), total])
+    plt.savefig(os.path.join(folder_path, "graph1.png"))
+    plt.close()
+    ### Graph 2: decompiled and missing functions (pie)
+    fig, ax = plt.subplots()
+    ax.set_title("Decompiled functions vs missing functions")
+    ax.pie([len(functions), len(missing)], labels=["Decompiled", "Missing"], autopct="%1.3f%%")
+    plt.savefig(os.path.join(folder_path, "graph2.png"))
+    plt.close()
+    ### Graph 3: line graph of progress over time
+    echovr58_data = data["v1.58"]
+    timestamps = []
+    total_decompiled = []
+    commit_labels = []
+    for commit, info in echovr58_data.items():
+        timestamp = datetime.strptime(info["timestamp"], "%Y-%m-%dT%H:%M:%S.%f")
+        timestamps.append((timestamp, info["percentage"], commit))
+    timestamps.sort(key=lambda x: x[0])
+    sorted_timestamps, sorted_decompiled, sorted_commits = zip(*timestamps)
+    fig, ax = plt.subplots()
+    ax.plot(sorted_timestamps, sorted_decompiled, marker='o', linestyle='-', color='b')
+    for i, (commit, timestamp, decompiled) in enumerate(zip(sorted_commits, sorted_timestamps, sorted_decompiled)):
+        ax.annotate(commit, (timestamp, decompiled), textcoords="offset points", xytext=(0,10), ha='center')
+    ax.xaxis.set_major_locator(mdates.YearLocator())
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+    plt.gcf().autofmt_xdate()
+    ax.set_xlabel('Time')
+    ax.set_ylabel('Total Decompiled (%)')
+    ax.set_title('Decompilation progress over time')
+    plt.legend(['Total Decompiled'])
+    plt.savefig(os.path.join(folder_path, "graph3.png"))
+    print("Graphs created.")
+
+def write_data(data, functions, missing, total, path):
+    git_commit = get_git_revision_short_hash()
+    data["v1.58"][git_commit] = {
+        "timestamp": datetime.now().isoformat(),
+        "total_decompiled": len(functions),
+        "functions_c_total": total,
+        "missing": len(missing),
+        "percentage": len(functions) / total * 100
+    }
+    with open(path, "w") as f:
+        f.write(json.dumps(data, indent=4))
+    print("Data written to data.json.")
+
+def print_progress(functions, missing, total):
     print()
+    print("                         v1.58 Decompilation Progress")
     print("-------------------------------------------------------------------------------")
     print(f"Total function declarations (headers and source files): {len(functions)}")
     functions = set(functions)
     print(f"Unique functions: {len(functions)}")
     print(f"Total functions in functions.c: {total}")
     print(f"Total missing functions: {len(missing)}")
-    print(f"     Grand percentage: ({len(functions)} / {total}) {len(functions) / total * 100:.5f}%")
+    print(f"               Grand percentage: ({len(functions)} / {total}) {len(functions) / total * 100:.5f}%")
     print("-------------------------------------------------------------------------------")
+    print()
+
+if __name__ == "__main__":
+    print(" --- v1.58 ---")
+    print("Finding decompiled functions...")
+    functions = get_decompiled_functions("echovr58/EchoArena")
+    print("Finding functions.c functions...")
+    missing, total = compare_to_functions_c("echovr58/wip/functions.c", functions)
+    print_progress(functions, missing, total)
+    use_path_workaround = False
+    try:
+        f = open("docs/graphs/data.json", "r")
+    except FileNotFoundError:
+        use_path_workaround = True
+        f = open("../docs/graphs/data.json", "r")
+    path = "docs/graphs/data.json" if not use_path_workaround else "../docs/graphs/data.json"
+    folder_path = "docs/graphs" if not use_path_workaround else "../docs/graphs"
+    data = json.loads(f.read())
+    f.close()
+    write_data(data, functions, missing, total, path)
+    create_graphs(data, functions, missing, total, folder_path)
