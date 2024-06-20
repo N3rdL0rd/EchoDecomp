@@ -623,5 +623,191 @@ namespace NRadEngine
 
             return search_start - str;
         }
+        static __int64 IsUInt64(const char *str, __int64 base)
+        {
+            char char_value;
+            unsigned int digit_value;
+            __int64 digit_count;
+
+            const char *current_char = str;
+
+            if (!str)
+                return 0i64;
+
+            while (*current_char == 32 || *current_char == 9)
+                ++current_char;
+
+            if (*current_char == 48 && ((*current_char + 1 - 88) & 0xDF) == 0)
+            {
+                if (*(current_char + 1) == 88)
+                {
+                    base = 16i64;
+                    current_char += 2;
+                }
+            }
+            else if (*current_char == 43) // Handle leading '+' sign
+            {
+                ++current_char;
+            }
+
+            char_value = *current_char;
+            digit_count = 0i64;
+
+            while (char_value)
+            {
+                // Determine the numeric value of the character with some hacky math
+                if ((unsigned __int8)(char_value - 48) > 9u)
+                {
+                    if ((unsigned __int8)(char_value - 97) > 0x19u)
+                    {
+                        if ((unsigned __int8)(char_value - 65) > 0x19u)
+                            return 0i64;
+                        digit_value = char_value - 55;
+                    }
+                    else
+                    {
+                        digit_value = char_value - 87;
+                    }
+                }
+                else
+                {
+                    digit_value = char_value - 48;
+                }
+
+                if (digit_value < 0 || digit_value >= base)
+                    return 0i64;
+
+                char_value = *++current_char;
+                ++digit_count;
+            }
+
+            // Return 1 if at least one valid digit was found, otherwise 0
+            // LOBYTE(digit_count) = digit_count != 0; // todo: investigate LOBYTE macro
+            digit_count = LOBYTE(digit_count != 0); // temporary fix
+            return digit_count;
+        }
+        static bool IsWhiteSpace(char c) // originally _BOOL8, but bool is more readable and functionally equivalent
+        {
+            return c == 32 || (unsigned __int8)(c - 9) <= 4u; // neat trick!
+        }
+        static __int64 LastIndexOf(
+            const char *str,
+            char ch,
+            unsigned int matchcase,
+            unsigned __int64 fromidx)
+        {
+            char search_char;
+            __int64 result_idx;
+            __int64 str_offset;
+
+            if (matchcase)
+            {
+                if ((unsigned __int8)(ch - 65) > 0x19u)
+                    search_char = ch;
+                else
+                    search_char = ch + 32;
+                if ((unsigned __int8)(ch - 97) <= 0x19u)
+                    ch -= 32;
+            }
+            else
+            {
+                search_char = ch;
+            }
+
+            result_idx = -1i64;
+
+            if (fromidx)
+            {
+                str_offset = -(__int64)str;
+                do
+                {
+                    char current_char = *str;
+                    if (!current_char)
+                        break;
+                    if (current_char == search_char || current_char == ch)
+                        result_idx = (__int64)&str[str_offset];
+                    ++str;
+                    --fromidx;
+                } while (fromidx);
+            }
+
+            return result_idx;
+        }
+        static signed __int64 LastIndexOf(
+            const char *str,
+            unsigned __int64 strlength,
+            const char *substr,
+            unsigned __int64 substrlength,
+            unsigned int matchcase)
+        {
+            const char *end_ptr;
+            signed __int64 substr_index;
+            unsigned __int64 current_length;
+            const char *current_substr;
+            char str_char;
+            char substr_char;
+            __int64 comparison;
+
+            end_ptr = &str[strlength - substrlength];
+
+            if (end_ptr < str)
+                return -1i64;
+
+            substr_index = end_ptr - substr;
+
+        LABEL_3:
+            current_length = substrlength;
+            for (current_substr = substr; current_length; --current_length)
+            {
+                str_char = current_substr[substr_index];
+                if (!str_char && !*current_substr)
+                    break;
+                substr_char = *current_substr;
+                if (!matchcase)
+                {
+                    if ((unsigned __int8)(str_char - 65) <= 0x19u)
+                        str_char += 32;
+                    if ((unsigned __int8)(substr_char - 65) <= 0x19u)
+                        substr_char += 32;
+                }
+                if (str_char >= substr_char)
+                    comparison = str_char > substr_char;
+                else
+                    comparison = -1i64;
+                ++current_substr;
+                if (comparison)
+                {
+                    --end_ptr;
+                    --substr_index;
+                    if (end_ptr >= str)
+                        goto LABEL_3;
+                    return -1i64;
+                }
+            }
+            return end_ptr - str;
+        }
+        static signed __int64 Length(const char *str, unsigned __int64 maxlen)
+        {
+            const char *i;
+            for (i = str; maxlen; ++i)
+            {
+                --maxlen;
+                if (!*i)
+                    break;
+            }
+            return i - str;
+        }
+        static __int64 Length(const wchar_t *str, unsigned __int64 maxlen)
+        {
+            const wchar_t *i; // rax
+
+            for (i = str; maxlen; ++i)
+            {
+                --maxlen;
+                if (!*i)
+                    break;
+            }
+            return i - str;
+        }
     };
 }
