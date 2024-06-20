@@ -2,6 +2,7 @@
 
 #include <minwindef.h>
 #include <ints.h>
+#include <stringapiset.h>
 
 namespace NRadEngine
 {
@@ -399,6 +400,228 @@ namespace NRadEngine
             }
 
             return result;
+        }
+        static void FromWideChar(char *dst, const wchar_t *src, unsigned __int64 dstsize)
+        {
+            WideCharToMultiByte(0, 0, src, -1, dst, dstsize, 0i64, 0i64);
+        }
+        static void FromWideCharFast(char *dst, const wchar_t *src, unsigned __int64 dstsize)
+        {
+            unsigned __int64 copy_length;
+            unsigned __int64 copy_index;
+
+            __int64 src_length = -1;
+            const wchar_t *src_ptr = src;
+            do
+            {
+                --src_length;
+                if (!*src_ptr)
+                    break;
+                ++src_ptr;
+            } while (src_length);
+
+            copy_length = src_ptr - src;
+
+            if (dstsize - 1 < copy_length)
+                copy_length = dstsize - 1;
+
+            copy_index = 0;
+
+            while (copy_index < copy_length)
+            {
+                dst[copy_index] = (char)src[copy_index];
+                ++copy_index;
+            }
+
+            // Ensure null-termination
+            dst[copy_length] = '\0';
+        }
+        static signed __int64 IndexOf(
+            const char *str,
+            const char *substr,
+            unsigned int matchcase,
+            unsigned __int64 fromidx)
+        {
+            __int64 substr_length;
+            __int64 str_length;
+            const char *substr_ptr;
+            const char *str_ptr;
+
+            substr_length = -1;
+            substr_ptr = substr;
+            do
+            {
+                --substr_length;
+                if (!*substr_ptr)
+                    break;
+                ++substr_ptr;
+            } while (substr_length);
+
+            str_length = -1;
+            str_ptr = str;
+            do
+            {
+                --str_length;
+                if (!*str_ptr)
+                    break;
+                ++str_ptr;
+            } while (str_length);
+
+            return IndexOf(str, str_ptr - str, substr, substr_ptr - substr, matchcase, fromidx);
+        }
+        static signed __int64 IndexOf(
+            const char *str,
+            char ch,
+            unsigned int matchcase,
+            unsigned __int64 fromidx)
+        {
+            unsigned __int64 str_length;
+            const char *search_ptr;
+            char current_char;
+            char search_char;
+
+            if (fromidx)
+            {
+                str_length = fromidx + 1;
+                search_ptr = str;
+                if (fromidx != -1i64)
+                {
+                    do
+                    {
+                        --str_length;
+                        if (!*search_ptr)
+                            break;
+                        ++search_ptr;
+                    } while (str_length);
+                }
+                if (fromidx >= search_ptr - str)
+                    return -1i64;
+            }
+
+            const char *start_ptr = &str[fromidx];
+            current_char = str[fromidx];
+            if (!current_char)
+                return -1i64;
+
+            while (1)
+            {
+                search_char = ch;
+                if (!matchcase)
+                {
+                    if ((unsigned __int8)(current_char - 65) <= 0x19u)
+                        current_char += 32;
+                    if ((unsigned __int8)(ch - 65) <= 0x19u)
+                        search_char += 32;
+                }
+                if (current_char >= search_char && current_char <= search_char)
+                    break;
+                current_char = *++start_ptr;
+                if (!current_char)
+                    return -1i64;
+            }
+
+            return start_ptr - str;
+        }
+        static signed __int64 IndexOf(
+            const char *str,
+            unsigned __int64 strlength,
+            const char *substr,
+            unsigned __int64 substrlength,
+            unsigned int matchcase,
+            unsigned __int64 fromidx)
+        {
+            const char *end_search;
+            const char *search_start;
+            signed __int64 substr_index;
+            unsigned __int64 remaining_length;
+            const char *substr_ptr;
+            char current_char;
+            char search_char;
+
+            end_search = &str[strlength - substrlength];
+            search_start = &str[fromidx];
+
+            if (search_start > end_search)
+                return -1i64;
+
+            substr_index = search_start - substr;
+
+        SEARCHLOOP:
+            remaining_length = substrlength;
+            substr_ptr = substr;
+
+            while (remaining_length)
+            {
+                current_char = substr_ptr[substr_index];
+                if (!current_char && !*substr_ptr)
+                    break;
+                search_char = *substr_ptr;
+                if (!matchcase)
+                {
+                    if ((unsigned __int8)(current_char - 65) <= 0x19u)
+                        current_char += 32;
+                    if ((unsigned __int8)(search_char - 65) <= 0x19u)
+                        search_char += 32;
+                }
+                if (current_char >= search_char)
+                {
+                    if (current_char > search_char)
+                    {
+                        ++search_start;
+                        ++substr_index;
+                        if (search_start <= end_search)
+                            goto SEARCHLOOP;
+                        return -1i64;
+                    }
+                }
+                else
+                {
+                    substr_index = -1i64;
+                }
+                ++substr_ptr;
+            }
+
+            return search_start - str;
+        }
+        static signed __int64 IndexOf(
+            const char *str,
+            unsigned __int64 strlength,
+            char ch,
+            unsigned int matchcase,
+            unsigned __int64 fromidx)
+        {
+            const char *end_search;
+            const char *search_start;
+            char current_char;
+            char search_char;
+
+            end_search = &str[strlength];
+            search_start = &str[fromidx];
+
+            if (search_start >= end_search)
+                return -1i64;
+
+            while (1)
+            {
+                current_char = *search_start;
+                search_char = ch;
+
+                if (!matchcase)
+                {
+                    if ((unsigned __int8)(current_char - 65) <= 0x19u)
+                        current_char += 32;
+                    if ((unsigned __int8)(search_char - 65) <= 0x19u)
+                        search_char += 32;
+                }
+
+                if (current_char >= search_char && current_char <= search_char)
+                    break;
+
+                if (++search_start >= end_search)
+                    return -1i64;
+            }
+
+            return search_start - str;
         }
     };
 }
