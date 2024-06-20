@@ -1,5 +1,8 @@
 #include "NRadEngine/include/CSysString.h"
 
+#include <minwindef.h>
+#include <ints.h>
+
 namespace NRadEngine
 {
     class CSysString
@@ -263,6 +266,139 @@ namespace NRadEngine
                 *output_ptr++ = '\0';
 
             return output_ptr - str;
+        }
+        static __int64 EndsWith(const char *str, const char *suffix, unsigned int matchcase)
+        {
+            /**
+             * Checks if a string ends with a specific suffix.
+             *
+             * @param str The string to check.
+             * @param suffix The suffix to compare against the end of `str`.
+             * @param matchcase Flag indicating whether the comparison is case-sensitive (1) or not (0).
+             * @return Returns 1 if `str` ends with `suffix` (case-sensitive or insensitive based on `matchcase`),
+             *         otherwise returns 0.
+             */
+            __int64 str_length;
+            const char *str_ptr;
+            unsigned __int64 suffix_length;
+            const char *suffix_ptr;
+            __int64 compare_length;
+            const char *compare_ptr;
+            unsigned int result;
+            char suffix_char;
+            char str_char;
+            __int64 comparison_result;
+            bool equal;
+
+            str_length = -1i64;
+            str_ptr = str;
+            do
+            {
+                --str_length;
+                if (!*str_ptr)
+                    break;
+                ++str_ptr;
+            } while (str_length);
+            suffix_length = str_ptr - str;
+            suffix_ptr = suffix;
+
+            compare_length = -1i64;
+            do
+            {
+                --compare_length;
+                if (!*suffix_ptr)
+                    break;
+                ++suffix_ptr;
+            } while (compare_length);
+            compare_length = suffix_ptr - suffix;
+
+            // If the suffix is longer than the string, it cannot be a suffix
+            if (suffix_length < compare_length)
+                return 0i64;
+
+            comparison_result = -1i64;
+            compare_ptr = &str[suffix_length - compare_length - (_QWORD)suffix];
+
+            result = 0;
+            do
+            {
+                suffix_char = suffix[(_QWORD)compare_ptr];
+                if (!suffix_char && !*suffix)
+                    break;
+                str_char = *suffix;
+                if (!matchcase)
+                {
+                    if ((unsigned __int8)(suffix_char - 65) <= 0x19u)
+                        suffix_char += 32;
+                    if ((unsigned __int8)(str_char - 65) <= 0x19u)
+                        str_char += 32;
+                }
+                if (suffix_char >= str_char)
+                    comparison_result = suffix_char > str_char;
+                else
+                    comparison_result = -1i64;
+                ++suffix;
+                equal = comparison_result == 0;
+                if (comparison_result)
+                    goto END;
+                --result;
+            } while (result);
+            equal = 1;
+
+        END:
+            // expands to ((BYTE)(((DWORD_PTR)(result)) & 0xff)) = v19; - not sure what this is supposed to do - maybe v15 = LOBYTE(v19)?
+            // LOBYTE(v15) = v19; // TODO: investigate LOBYTE macro and ida's decompilation
+            result = LOBYTE(equal); // temporary fix
+            return result;
+        }
+        static char EndsWith(const char *str, char suffix, unsigned int matchcase)
+        {
+            /**
+             * Checks if a string ends with a specific character.
+             *
+             * @param str The string to check.
+             * @param suffix The character to compare against the last character of `str`.
+             * @param matchcase Flag indicating whether the comparison is case-sensitive (1) or not (0).
+             * @return Returns 1 if the last character of `str` matches `suffix` (case-sensitive or insensitive based on `matchcase`),
+             *         otherwise returns 0.
+             */
+            signed __int64 str_length;
+            signed __int8 last_char;
+            int result = -1;
+            char str_char;
+            char suffix_char;
+
+            str_length = -1;
+            const char *str_ptr = str;
+            do
+            {
+                --str_length;
+                if (!*str_ptr)
+                    break;
+                ++str_ptr;
+            } while (str_length);
+
+            if (str_length)
+            {
+                last_char = str[str_length - 1];
+
+                if (!matchcase)
+                {
+                    if ((unsigned __int8)(last_char - 65) <= 0x19u)
+                        last_char += 32;
+                    if ((unsigned __int8)(suffix - 65) <= 0x19u)
+                        suffix += 32;
+                }
+
+                if (last_char >= suffix)
+                    result = last_char > suffix;
+
+                // LOBYTE(v7) = v3 == 0;
+                // TODO: investigate LOBYTE macro
+                result = LOBYTE(result == 0); // temporary fix
+            }
+
+            return result;
         }
     };
 }
