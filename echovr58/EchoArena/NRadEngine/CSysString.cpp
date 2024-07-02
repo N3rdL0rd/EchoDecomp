@@ -1,5 +1,7 @@
 #include "NRadEngine/include/CSysString.h"
 
+#include "NRadEngine/include/CMemory.h"
+#include "NRadEngine/include/CSymbol64.h"
 #include <minwindef.h>
 #include <ints.h>
 #include <stringapiset.h>
@@ -808,6 +810,351 @@ namespace NRadEngine
                     break;
             }
             return i - str;
+        }
+        static void Remove(char *sourceString, const char *substringToRemove, unsigned int matchCase)
+        {
+            __int64 sourceLength;
+            __int64 substringLength;
+            char *sourceEnd;
+            signed __int64 remainingLength;
+            const char *substringEnd;
+            signed __int64 substringLengthSigned;
+            unsigned __int64 foundIndex;
+
+            sourceLength = -1i64;
+            substringLength = -1i64;
+            sourceEnd = sourceString;
+            do
+            {
+                --substringLength;
+                if (!*sourceEnd)
+                    break;
+                ++sourceEnd;
+            } while (substringLength);
+            remainingLength = sourceEnd - sourceString;
+            if (remainingLength)
+            {
+                substringEnd = substringToRemove;
+                do
+                {
+                    --sourceLength;
+                    if (!*substringEnd)
+                        break;
+                    ++substringEnd;
+                } while (sourceLength);
+                substringLengthSigned = substringEnd - substringToRemove;
+                if (substringLengthSigned)
+                {
+                    for (foundIndex = NRadEngine::CSysString::IndexOf(sourceString, substringToRemove, matchCase, 0i64);
+                         foundIndex != -1i64;
+                         foundIndex = NRadEngine::CSysString::IndexOf(sourceString, substringToRemove, matchCase, 0i64))
+                    {
+                        NRadEngine::CMemory::Move(&sourceString[foundIndex], &sourceString[substringLengthSigned + foundIndex], remainingLength - foundIndex - substringLengthSigned + 1);
+                        remainingLength -= substringLengthSigned;
+                        if (!remainingLength)
+                            break;
+                    }
+                }
+            }
+        }
+        static void Replace(char *string, char oldChar, char newChar, unsigned int matchCase)
+        {
+            char currentChar;
+            char compareChar;
+
+            if (string && *string)
+            {
+                do
+                {
+                    currentChar = *string;
+                    compareChar = oldChar;
+                    if (!matchCase)
+                    {
+                        if ((unsigned __int8)(currentChar - 65) <= 0x19u)
+                            currentChar += 32;
+                        if ((unsigned __int8)(oldChar - 65) <= 0x19u)
+                            compareChar = oldChar + 32;
+                    }
+                    if (currentChar == compareChar)
+                        *string = newChar;
+                    ++string;
+                } while (*string);
+            }
+        }
+        static unsigned __int64 SNPrintF(char *outputBuffer, unsigned __int64 bufferLength, const char *formatString, ...)
+        {
+            // TODO: decipher
+            unsigned __int64 *printfOptions;
+            unsigned __int64 result;
+            va_list args;
+
+            va_start(args, formatString);
+            printfOptions = *local_stdio_printf_options();
+            LODWORD(result) = *stdio_common_vsnprintf_s(
+                *printfOptions,
+                outputBuffer,
+                bufferLength,
+                0xFFFFFFFFFFFFFFFFui64,
+                formatString,
+                0i64,
+                args);
+
+            if ((result & 0x80000000) != 0i64)
+                LODWORD(result) = -1;
+
+            return (int)result;
+        }
+        static unsigned __int64 SScanF(const char *inputBuffer, const char *formatString, ...)
+        {
+            // TODO: decipher
+            unsigned __int64 *scanfOptions;
+            va_list args;
+
+            va_start(args, formatString);
+            scanfOptions = *local_stdio_scanf_options();
+            return *stdio_common_vsscanf(
+                *scanfOptions,
+                inputBuffer,
+                0xFFFFFFFFFFFFFFFFui64,
+                formatString,
+                0i64,
+                args);
+        }
+        static bool StartsWith(
+            const char *mainString,
+            const char *prefixString,
+            unsigned int matchCase,
+            unsigned __int64 startIndex)
+        {
+            __int64 prefixLength;
+            const char *prefixEnd;
+
+            if (!mainString || !prefixString)
+                return 0i64;
+
+            prefixLength = -1i64;
+            prefixEnd = prefixString;
+            do
+            {
+                --prefixLength;
+                if (!*prefixEnd)
+                    break;
+                ++prefixEnd;
+            } while (prefixLength);
+
+            return NRadEngine::CSysString::Compare(
+                       &mainString[startIndex],
+                       prefixString,
+                       matchCase,
+                       prefixEnd - prefixString) == 0;
+        }
+        static void SubString(
+            const char *sourceString,
+            unsigned __int64 sourceLength,
+            unsigned __int64 startIndex,
+            unsigned __int64 endIndex,
+            char *outputString)
+        {
+            unsigned __int64 adjustedEndIndex;
+            unsigned __int64 adjustedStartIndex;
+            unsigned __int64 subStringLength;
+            const char *subStringStart;
+            char *outputPtr;
+            unsigned __int64 copyLength;
+            unsigned __int64 remainingChars;
+            signed __int64 offset;
+            char currentChar;
+
+            adjustedEndIndex = sourceLength + 1;
+            if (endIndex < adjustedEndIndex)
+                adjustedEndIndex = endIndex;
+
+            adjustedStartIndex = adjustedEndIndex;
+            if (startIndex < adjustedEndIndex)
+                adjustedStartIndex = startIndex;
+
+            subStringLength = adjustedEndIndex - adjustedStartIndex;
+            subStringStart = &sourceString[adjustedStartIndex];
+            outputPtr = outputString;
+            copyLength = subStringLength + 1;
+
+            if (copyLength)
+            {
+                remainingChars = copyLength - 1;
+                if (remainingChars)
+                {
+                    offset = subStringStart - outputString;
+                    do
+                    {
+                        currentChar = outputPtr[offset];
+                        if (!currentChar)
+                            break;
+                        *outputPtr++ = currentChar;
+                        --remainingChars;
+                    } while (remainingChars);
+                }
+                *outputPtr = 0;
+            }
+        }
+        static void ToAlphaNumeric(char *inputString, char replacementChar)
+        {
+            char currentChar;
+
+            if (inputString && *inputString)
+            {
+                do
+                {
+                    currentChar = *inputString;
+                    if ((unsigned __int8)(currentChar - 'a') > 0x19u &&
+                        (unsigned __int8)(currentChar - 'A') > 0x19u &&
+                        (unsigned __int8)(currentChar - '0') > 9u)
+                    {
+                        *inputString = replacementChar;
+                    }
+                    ++inputString;
+                } while (*inputString);
+            }
+        }
+        static void ToLower(char *inputString, unsigned __int64 maxLength)
+        {
+            char currentChar;
+
+            for (; *inputString; *inputString++ = currentChar)
+            {
+                if (!maxLength--)
+                    break;
+
+                currentChar = *inputString;
+                if ((unsigned __int8)(currentChar - 'A') <= 0x19u)
+                    currentChar += 32;
+            }
+        }
+        NRadEngine::CSymbol64 *ToSymbol(
+            NRadEngine::CSymbol64 *result,
+            const char *str,
+            unsigned int record,
+            unsigned int upload)
+        {
+            result->value = NRadEngine::CSymbol64::CalculateSymbolValue(str, -1i64, record, 0xFFFFFFFFFFFFFFFFui64, upload); // TODO: Csymbol64 values
+            return result;
+        }
+        unsigned __int64 ToUInt32(const char *str, __int64 base)
+        {
+            return NRadEngine::CSysString::ToUInt64(str, base);
+        }
+        __int64 ToUInt64(const char *inputString, __int64 radix)
+        {
+            __int64 result;
+            char currentChar;
+            __int64 accumulatedValue;
+            int isNegative;
+            char digitValue;
+
+            if (!inputString)
+                return 0i64;
+
+            // Skip leading whitespace
+            while (*inputString == ' ' || *inputString == '\t')
+                ++inputString;
+
+            // Handle hexadecimal prefix
+            if (*inputString == '0' && (inputString[1] == 'x' || inputString[1] == 'X'))
+            {
+                radix = 16i64;
+                inputString += 2;
+            }
+            else if (*inputString == '+')
+            {
+                ++inputString;
+            }
+
+            // Skip leading zeros
+            while (*inputString == '0')
+                ++inputString;
+
+            currentChar = *inputString;
+            accumulatedValue = 0i64;
+            isNegative = 0;
+
+            for (; currentChar; accumulatedValue = digitValue + radix * accumulatedValue)
+            {
+                digitValue = -1;
+
+                if ((unsigned __int8)(currentChar - '0') <= 9)
+                    digitValue = currentChar - '0';
+                else if ((unsigned __int8)(currentChar - 'a') <= 25)
+                    digitValue = currentChar - 'a' + 10;
+                else if ((unsigned __int8)(currentChar - 'A') <= 25)
+                    digitValue = currentChar - 'A' + 10;
+
+                if (currentChar == '-' && !accumulatedValue)
+                {
+                    digitValue = 0;
+                    isNegative = 1;
+                }
+                else if (digitValue < 0)
+                    break;
+
+                if (digitValue >= radix)
+                    break;
+
+                currentChar = *++inputString;
+            }
+
+            result = -accumulatedValue;
+            if (!isNegative)
+                return accumulatedValue;
+
+            return result;
+        }
+        void ToWideChar(wchar_t *dst, const char *src, unsigned __int64 dstsize)
+        {
+            MultiByteToWideChar(0, 1u, src, -1, dst, dstsize);
+        }
+        unsigned __int64 VSCPrintF(const char *formatString, char *argumentList)
+        {
+            // TODO: decipher
+            unsigned __int64 *printfOptions;
+            unsigned __int64 charCount;
+
+            printfOptions = _local_stdio_printf_options();
+            LODWORD(charCount) = _stdio_common_vsprintf(
+                *printfOptions | 2,
+                0i64,
+                0i64,
+                formatString,
+                0i64,
+                argumentList);
+
+            if ((charCount & 0x80000000) != 0i64)
+                LODWORD(charCount) = -1;
+
+            return (int)charCount;
+        }
+        unsigned __int64 VSNPrintF(
+            char *outputBuffer,
+            unsigned __int64 bufferSize,
+            const char *formatString,
+            char *argumentList)
+        {
+            // TODO: decipher
+            unsigned __int64 *printfOptions;
+            unsigned __int64 charCount;
+
+            printfOptions = *local_stdio_printf_options();
+            LODWORD(charCount) = *stdio_common_vsnprintf_s(
+                *printfOptions,
+                outputBuffer,
+                bufferSize,
+                0xFFFFFFFFFFFFFFFFui64,
+                formatString,
+                0i64,
+                argumentList);
+
+            if ((charCount & 0x80000000) != 0i64)
+                LODWORD(charCount) = -1;
+
+            return (int)charCount;
         }
     };
 }
