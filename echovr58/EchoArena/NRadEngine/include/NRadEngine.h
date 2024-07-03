@@ -12,4 +12,5 @@
 
 namespace NRadEngine {
     __int64 __fastcall Main(const char *argv);
+    LRESULT WindowProc(HWND__ *wnd, unsigned int msg, unsigned __int64 wparam, __int64 lparam);
 }

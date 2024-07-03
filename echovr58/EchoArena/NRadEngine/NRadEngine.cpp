@@ -117,4 +117,82 @@ namespace NRadEngine
     {
         return 0xFF; // TODO: stubbed, see echovr58/wip/NRadEngine.cpp and docs/echovr58/engine.md#unresolved-issues
     }
+
+    LRESULT WindowProc(HWND__ *wnd, unsigned int msg, unsigned __int64 wparam, __int64 lparam)
+    {
+        // TODO: decipher
+        unsigned __int64 _wparam; // rbx
+        int xlimit;               // ecx
+        int ylimit;               // edx
+        tagPOINT Point;           // [rsp+20h] [rbp-28h] BYREF
+        tagRECT Rect;             // [rsp+28h] [rbp-20h] BYREF
+
+        _wparam = wparam;
+        if (msg == 2)
+        {
+            NRadEngine::gWindowEvents.flags[0] |= 0x10;
+            return 0i64;
+        }
+        if (msg == 16)
+        {
+            DestroyWindow(wnd);
+            return 0i64;
+        }
+        if (msg != 32)
+        {
+            if (msg == 256)
+            {
+                switch (wparam)
+                {
+                case 0x1Bui64:
+                    NRadEngine::gWindowEvents.flags[0] |= 2;
+                    return 0i64;
+                case 0x79ui64:
+                LABEL_9:
+                    NRadEngine::gWindowEvents.flags[0] |= 4;
+                    return 0i64;
+                case 0x7Aui64:
+                    NRadEngine::gWindowEvents.flags[0] |= 8;
+                    return 0i64;
+                }
+            }
+            else
+            {
+                if (msg != 260)
+                    return DefWindowProcA(wnd, msg, wparam, lparam);
+                switch (wparam)
+                {
+                case 0xDui64:
+                    NRadEngine::gWindowEvents.flags[0] |= 1;
+                    return 0i64;
+                case 0x79ui64:
+                    goto LABEL_9;
+                case 0x73ui64:
+                    msg = 260;
+                    wparam = 115i64;
+                    return DefWindowProcA(wnd, msg, wparam, lparam);
+                }
+            }
+            return 0i64;
+        }
+        if (NRadEngine::gShowSystemCursor)
+        {
+            msg = 32;
+            return DefWindowProcA(wnd, msg, wparam, lparam);
+        }
+        Point = 0i64;
+        GetCursorPos(&Point);
+        ScreenToClient(wnd, &Point);
+        *(_QWORD *)&Rect.left = 0i64;
+        *(_QWORD *)&Rect.right = 0i64;
+        GetClientRect(wnd, &Rect);
+        xlimit = Rect.right - Rect.left;
+        ylimit = Rect.bottom - Rect.top;
+        Rect.right -= Rect.left;
+        Rect.bottom -= Rect.top;
+        if (Point.x < 0 || Point.x > xlimit || Point.y < 0 || Point.y > ylimit)
+            return DefWindowProcA(wnd, 0x20u, _wparam, lparam);
+        SetCursor(0i64);
+        return 1i64;
+    }
 }
