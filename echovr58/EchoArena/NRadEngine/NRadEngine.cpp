@@ -82,7 +82,7 @@ namespace NRadEngine
         NRadEngine::CSysFile::GetBaseName(&result, &dst);
         NRadEngine::CSysString::ToLower(result.data, 0x200ui64);
         if (!NRadEngine::CSysString::Compare(result.data, "echoarena.exe", 1u, 0x200ui64)) // match case, up to 512 characters
-            NRadEngine::NRadGame::CR14Game::SetMultiplayerApp(gameInstance);               // HACK: only enable multiplayer if the executable is named "echoarena.exe"
+            NRadEngine::NRadGame::CR14Game::SetMultiplayerApp(gameInstance);
 
         // Run game
         gameInstance->Run(gameInstance); // TODO: IDA also doesn't want to decompile this

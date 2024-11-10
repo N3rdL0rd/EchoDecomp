@@ -32,7 +32,7 @@ namespace NRadEngine
                     break;
                 current = *str;
                 if ((unsigned __int8)(*str - 'A') <= 'Z' - 'A')
-                    current += 32; // HACK: all uppercase letters are 32 bytes away from their lowercase counterparts ('A' - 'a' = -32, 'B' - 'b' = -32, etc.)
+                    current += 32;
             }
         }
         static void ToUpper(char *str, unsigned __int64 maxLength)
@@ -45,7 +45,7 @@ namespace NRadEngine
                     break;
                 current = *str;
                 if ((unsigned __int8)(*str - 'a') <= 'z' - 'a')
-                    current -= 32; // HACK: see above
+                    current -= 32;
             }
         }
         static __int64 Compare(
